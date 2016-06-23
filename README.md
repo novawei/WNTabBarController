@@ -1,1 +1,5 @@
 # WNTabBarController
+TabBar可以滑动的TabBarController，继承UITabBarController，将WNScrollableTabBar添加到TabBar上，保证原始TabBar的功能和展示。
+
+# 注意
+没有完全实现通用性，只是提供一个实现思路，可以通过修改部分参数，如颜色、字号等实现自定义
