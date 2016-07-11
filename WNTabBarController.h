@@ -1,9 +1,9 @@
 //
 //  WNTabBarController.h
-//  QDG
+//  WN
 //
 //  Created by WeiXinxing on 16/5/20.
-//  Copyright © 2016年 nova. All rights reserved.
+//  Copyright © 2016年 nfs. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -28,15 +28,25 @@
 @end
 
 @interface WNTabBarController : UITabBarController
+{
+    NSUInteger _selectedTab;
+}
 
 @property (nonatomic, strong, readonly) WNScrollableTabBar *scrollableTabBar;
+@property (nonatomic, strong) NSArray *tabControllers;
+
 - (void)setBadgeNumber:(NSUInteger)badge atIndex:(NSUInteger)index;
 
+/**
+ * 切换tab操作必须使用selectedTab
+ * 不能使用setSelectedIndex进行切换tab操作
+ */
 @property (nonatomic, assign) NSUInteger selectedTab;
 
 /**
- * WARNING:
- *  DO NOT use the following method to change viewControllers
+ *  WARNING:
+ *  不要在外部调用 viewControllers = @[] 修改数组，通过tabControllers修改
+ *  不要调用该方法去修改viewControllers
  *  - (void)setViewControllers:(NSArray<__kindof UIViewController *> *)viewControllers animated:(BOOL)animated
  */
 

@@ -1,9 +1,9 @@
 //
 //  WNTabBarController.m
-//  QDG
+//  WN
 //
 //  Created by WeiXinxing on 16/5/20.
-//  Copyright © 2016年 nova. All rights reserved.
+//  Copyright © 2016年 nfs. All rights reserved.
 //
 
 #import "WNTabBarController.h"
@@ -106,9 +106,9 @@
             [itemButton setImage:tabBarItem.selectedImage forState:UIControlStateHighlighted];
         }
         [itemButton setTitle:tabBarItem.title forState:UIControlStateNormal];
-        [itemButton setTitleColor:TABBAR_TITLE_COLOR forState:UIControlStateNormal];
-        [itemButton setTitleColor:TABBAR_TINT_COLOR forState:UIControlStateSelected];
-        [itemButton setTitleColor:TABBAR_TINT_COLOR forState:UIControlStateHighlighted];
+        [itemButton setTitleColor:BLACK_COLOR forState:UIControlStateNormal];
+        [itemButton setTitleColor:BLUE_COLOR forState:UIControlStateSelected];
+        [itemButton setTitleColor:BLUE_COLOR forState:UIControlStateHighlighted];
         
         itemButton.selected = (i == self.selectedIndex);
         
@@ -126,6 +126,11 @@
     if ([self.tabDelegate respondsToSelector:@selector(scrollableTabBar:didSelectItemAtIndex:)]) {
         [self.tabDelegate scrollableTabBar:self didSelectItemAtIndex:self.selectedIndex];
     }
+    
+//    CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+//    anim.duration = 0.5;
+//    anim.values = @[@(1.0), @(1.3), @(0.9), @(1.0)];
+//    [itemButton.imageView.layer addAnimation:anim forKey:@"Bounce"];
 }
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex
@@ -150,12 +155,13 @@
 
 @interface WNTabBarController () <WNScrollableTabBarDelegate>
 
-@property (nonatomic, strong) NSArray *internalViewControllers;
 @property (nonatomic, strong) WNScrollableTabBar *scrollableTabBar;
 
 @end
 
 @implementation WNTabBarController
+
+@synthesize selectedTab = _selectedTab;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -168,31 +174,20 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (NSUInteger)selectedIndex
-{
-    return self.selectedTab;
-}
-
-- (void)setSelectedIndex:(NSUInteger)selectedIndex
-{
-    [self setSelectedTab:selectedIndex];
-}
-
 - (void)setSelectedTab:(NSUInteger)selectedTab
 {
-    if (selectedTab < self.internalViewControllers.count) {
+    if (selectedTab < self.tabControllers.count) {
         _selectedTab = selectedTab;
         
         self.scrollableTabBar.selectedIndex = selectedTab;
-        UIViewController *controller = self.internalViewControllers[selectedTab];
+        UIViewController *controller = self.tabControllers[selectedTab];
         [super setViewControllers:[[NSArray alloc] initWithObjects:controller, nil]];
     }
 }
 
-- (void)setViewControllers:(NSArray<__kindof UIViewController *> *)viewControllers
+- (void)setTabControllers:(NSArray *)tabControllers
 {
-    // 重写，不调用super
-    self.internalViewControllers = viewControllers;
+    _tabControllers = tabControllers;
     [self setupScrollableTabBarIfNeeded];
 }
 
@@ -214,10 +209,10 @@
         return;
     }
     
-    NSUInteger count = self.internalViewControllers.count;
+    NSUInteger count = self.tabControllers.count;
     NSMutableArray *tabBarItems = [[NSMutableArray alloc] initWithCapacity:count];
     for (int i = 0; i < count; i++) {
-        UIViewController *controller = self.internalViewControllers[i];
+        UIViewController *controller = self.tabControllers[i];
         [tabBarItems addObject:controller.tabBarItem];
         // 覆盖tabBarItem，以免重合，图片不能为空，采用了透明的图片进行掩盖
         controller.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:@"tabbar_fake"] tag:i];
